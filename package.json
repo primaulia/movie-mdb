@@ -1,0 +1,17 @@
+{
+  "name": "mymdb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app",
+    "test": "jasmine-node spec"
+  },
+  "author": "Prima Aulia Gusta",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongoose": "^4.5.9"
+  }
+}
