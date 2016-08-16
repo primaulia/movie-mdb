@@ -1,5 +1,4 @@
-var mongo_url = process.env.MONGOLAB_URI ||
-                process.env.MONGOHQ_URL ||
+var mongo_url = process.env.MONGODB_URI ||
                 'mongodb://localhost/mymdb_db';
 
 // require mongoose, and connect it with the given url
