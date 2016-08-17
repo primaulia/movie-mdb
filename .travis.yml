@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+- node
+deploy:
+  provider: heroku
+  api_key:
+    secure: tarJfDRO/Qz+eMdP8uHgIwZjFxIHux632X2xSZ9hnNEYQIRJi15qgsQpn1J9BVww/SVKR4HsB6UELaiw23N5fNED+xZaddR/oRZNXnX0t6FruuXtBigguCSyMwJLxVV2YX3EnGPHgiBc+P8OpalLrqKbbYsJTrMokiH8DxTikuPLe0MXzxpzJS0+94tD1hk5sfuBFKWesENdNJmEDF9rzCyvfNmfSl3Vw/xY+x0e1kM/U8V5ZHegpeUEswAaef2q9GiDphCNk3ZEU6LHdLFgVUQIAQ02tW/taBju6HhmKFLUkXNc9ms3DJZYWFuqHiOi2xMFglsXqoU5RUUSZadNHcyxBRjwF0hLU7LZYSjgLfagQKHRpEXg6z3sRMfzLrisdCsGDPDgLk0wtNIbSkFNlPcuchnkZCIe6JcTQe+Fkt/G7JoWLfpd28Q0PiXljbp4k9qbdIW7GREvjyzwcQXPzebCBpLA40OdBqoPq1293v2xDte/S2IymaiWASE3L22hHb0wbBqwN8OF76izY3ErkpqKnuTdhD0IQwQ/giHaufvkJ53W/zlUNtop4/zHy1bnTT1gZS7HqgGu1uajSuwTR1QwxN4Qa+2yeZ22ROGZ83Ha5OeX34abvsvvGI3IQN0rFpC3qtppS3M0pUS/vapGnJ5DQLZN4NuGACnR8EHAO84=
+  app: movie-mdb
+  on:
+    repo: primaulia/movie-mdb
