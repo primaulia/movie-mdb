@@ -80,12 +80,18 @@ app.post('/login', function(req, res) {
       if (err) return res.status(400).send(err);
 
       if (found_user) {
-        var payload = found_user.id;
+        var payload = {
+          id: found_user.id,
+          email: found_user.email
+        };
         var expiryObj = {
-          expiryInMinutes: 60
+          exp: 60 * 3
         }
+        console.log( payload, expiryObj, jwt_secret);
         var jwt_token =
-          jwt.sign(payload, jwt_secret, expiryObj);
+          // jwt.sign(payload, jwt_secret, expiryObj);
+          jwt.sign(payload, jwt_secret, { expiresIn : 60*3 });
+
 
         return res.status(200).send(jwt_token);
       } else {
