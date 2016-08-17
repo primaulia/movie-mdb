@@ -39,19 +39,38 @@ var actorSchema = new mongoose.Schema({
       }
     }
   },
-  created_at: {
-    type: Date,
-    default: Date.now
-  }
+  // created_at: {
+  //   type: Date,
+  //   default: Date.now
+  // }
 });
 
+// example of a query helper
+actorSchema.query = {
+  byName: function(name) {
+    return this.find({ $or: [
+                              { firstName: new RegExp(name, 'i') },
+                              { lastName: new RegExp(name, 'i') },
+                            ]
+                    });
+  }
+}
+
 // set a virtual attributes
-actorSchema.virtual('fullName').get(function() {
+actorSchema.virtual('fullName')
+.get(function() {
      return this.firstName + ' ' + this.lastName;
-});
+}) // getting the virtual attributes on json view
+.set(function(fullName) {
+  var splitName = fullName.split(' ');
+  this.firstName = splitName[0] || '';
+  this.lastName = splitName[1] || '';
+}); // allowing virtual attributes to interact with actual mongo attr
+
 
 // register the modifiers
 actorSchema.set('toJSON', { getters: true, virtuals: true } );
+actorSchema.set('timestamps', {}); // default timestamps by default
 
 // register the Schema
 var Actor = mongoose.model('Actor', actorSchema);
