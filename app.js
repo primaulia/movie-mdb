@@ -9,6 +9,7 @@ mongoose.connect(mongo_url)
 // requiring the Movie module
 var Movie = require('./models/movie');
 var Actor = require('./models/actor');
+var User = require('./models/user');
 
 // require all installed modules
 var bodyParser = require('body-parser');
@@ -32,6 +33,33 @@ app.use(bodyParser.urlencoded({
 }));
 
 // let's set the routes to list all the movie
+
+
+// create user with email and password
+app.post('/signup', function(req, res) {
+  var userObject = new User(req.body.user);
+
+  userObject.save(function(err, user) {
+    if(err){
+      return res.status(401).send(err);
+    } else {
+      return res.status(200).send({message: "user created"});
+    }
+  });
+});
+
+// basic check if login post was done
+app.post('/login', function(req, res) {
+  User.findOne({ email: req.body.user.email, password: req.body.user.password }, function(err, user) {
+    if(err) res.send(err);
+
+    if(user) {
+      res.send(user);
+    } else {
+      res.status(401).send({ message: 'login failed' });
+    }
+  });
+});
 
 // list all movies
 
