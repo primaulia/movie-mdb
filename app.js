@@ -46,7 +46,7 @@ app.use(
       '/api/signup',
       '/api/login',
       {
-        url: '/api/movies',
+        url: new RegExp('/api.*/', 'i'),
         methods: ['GET']
       }
       // '/login',

@@ -44,5 +44,16 @@ movieSchema.set('toJSON', { getters: true } );
 // register the Schema
 var Movie = mongoose.model('Movie', movieSchema);
 
+// before saving, console.log('saving movie');
+movieSchema.pre('save', function(next) {
+  console.log('saving movie');
+  next();
+});
+
+// after saving, console.log('movie saved');
+movieSchema.post('save', function() {
+  console.log('movie saved');
+});
+
 // make this available to our other files
 module.exports = Movie;

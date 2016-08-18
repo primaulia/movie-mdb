@@ -53,9 +53,9 @@ router.post('/login', function(req, res) {
             email: found_user.email
           };
           var expiryObj = {
-            exp: 60 * 3
+            expiresIn: "3h"
           }
-          var jwt_token = jwt.sign(payload, jwt_secret, { expiresIn : 60*3 });
+          var jwt_token = jwt.sign(payload, jwt_secret, expiryObj);
 
           return res.status(200).send(jwt_token);
         } else {
