@@ -45,10 +45,9 @@ app.use(
     path: [
       '/api/signup',
       '/api/login',
-      {
-        url: new RegExp('/api.*/', 'i'),
-        methods: ['GET']
-      }
+      // {
+      //   url: new RegExp('/api.*/', 'i')
+      // }
       // '/login',
       // { url: new RegExp('/users.*/', 'i'), methods: ['PUT', 'GET']  }
     ]

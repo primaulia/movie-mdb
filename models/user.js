@@ -7,50 +7,52 @@ var userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: [true, 'Email is required'],
     unique: true
   },
   password: {
     type: String,
     required: true,
-    // custom validator for password field
     validate: [
-     function(password) {
-       return password.length >= 6;
-     },
-     'Password should be longer'
+      function(password) {
+        return password.length >= 6;
+      },
+      'Password is too short'
     ]
   }
 });
 
+
+
 userSchema.pre('save', function(next) {
   var user = this;
 
-  // Generate a salt, with a salt_work_factor of 5
+  // generate the bcrypt salt
   bcrypt.genSalt(5, function(err, salt) {
-    if (err) return next(err);
+    if(err) return next(err);
 
-    if (!user.isModified('password')) return next();
-
-    // Hash the password using our new salt
+    // create the hash ==> plain password text + salt
     bcrypt.hash(user.password, salt, function(err, hash) {
-      if (err) return next(err);
+        // Store hash in your password DB.
 
-      // Override the cleartext password with the hashed one
-      user.password = hash;
-      next();
+        user.password = hash;
+        next();
     });
   });
 });
 
-userSchema.methods.authenticate = function(password, callback) {
-  // console.log('password is ' + password);
-  // Compare is a bcrypt method that will return a boolean,
-  // if the first argument once encrypted corresponds to the second argument
-  bcrypt.compare(password, this.password, function(err, isMatch) {
-    callback(null, isMatch);
+userSchema.methods.auth = function(posted_password, callback) {
+  console.log('posted_password is: ' + posted_password);
+
+  // comparing
+  // 1st arg = posted password from req.body
+  // 2nd arg = hashed password from the db
+  // 3rd arg = is the callback
+  bcrypt.compare( posted_password, this.password, function(err, is_match) {
+    callback(null, is_match);
   });
-};
+}
+
 
 var User = mongoose.model('User', userSchema);
 

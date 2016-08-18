@@ -36,54 +36,39 @@ router.post('/signup', function(req, res) {
 
 // login route
 router.post('/login', function(req, res) {
-  var loggedin_user = req.body;
+  var input_user = req.body;
 
-  User.findOne(
-    { email: loggedin_user.email },
-    function(err, found_user) {
-      // this is error find flow
-      if (err) return res.status(400).send(err);
+  // 1. take in the email from req.body
+  // 2. find user based on that email
+  // 3. get password based on that user
+  // 4. compare it with req.body.password
 
-      found_user.authenticate(loggedin_user.password, function(err, isMatch) {
-        // console.log('password comparison is: ', isMatch);
-        if (isMatch) {
-          // return res.status(200).send({message: "Valid credentials !"});
+  User.findOne({ email: input_user.email }, function (err, db_user) {
+    if(err) res.send(err);
+
+    if(db_user) {
+      db_user.auth( input_user.password, function(err, is_match_password) {
+        if(err) return res.status(500).send(err);
+
+        if(is_match_password) {
           var payload = {
-            id: found_user.id,
-            email: found_user.email
+            id: db_user.id,
+            email: db_user.email
           };
           var expiryObj = {
-            expiresIn: "3h"
+            expiresIn: '3h'
           }
           var jwt_token = jwt.sign(payload, jwt_secret, expiryObj);
 
           return res.status(200).send(jwt_token);
         } else {
-          return res.status(401).send({message: "Login failed"});
-        };
+          return res.status(401).send({ message: 'login failed' });
+        }
       });
-
-      // if (found_user) {
-        // var payload = {
-        //   id: found_user.id,
-        //   email: found_user.email
-        // };
-        // var expiryObj = {
-        //   exp: 60 * 3
-        // }
-        // var jwt_token =
-        //   // jwt.sign(payload, jwt_secret, expiryObj);
-        //   jwt.sign(payload, jwt_secret, { expiresIn : 60*3 });
-        //
-        //
-        // return res.status(200).send(jwt_token);
-      // } else {
-      //   // this is login failed flow
-      //   return res.status(400).send({
-      //     message: 'login failed'
-      //   });
-      // }
-    });
+    } else {
+      return res.status(401).send({ message: 'user not found in database' });
+    }
+  })
 })
 
 // just for testing
