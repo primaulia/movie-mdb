@@ -1,6 +1,9 @@
 // require mongoose
 var mongoose = require('mongoose');
 
+var Actor = mongoose.model("Actor");
+var Director = mongoose.model("Director");
+
 // setting up how json structure would be like
 var movieSchema = new mongoose.Schema({
   title: {
@@ -8,34 +11,39 @@ var movieSchema = new mongoose.Schema({
     trim: true
   },
   publishedYear: Number,
-  director: String,
-  actor: String,
-  published: {
+  director: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Director'
+  },
+  actors: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Actor'
+  }],
+  publisher: {
     type: String,
     default: "MGM"
   },
   website: {
     type: String,
     trim: true,
-    // get: function(url) {
-    //   if(! url) {
-    //     return url;
-    //   } else {
-    //     if(
-    //       url.indexOf('http://') !== 0 &&
-    //       url.indexOf('https://') !== 0
-    //     ) {
-    //       url = 'http://' + url;
-    //     }
-    //
-    //     return url;
-    //   }
-    // }
-  },
-  created_at: {
-    type: Date,
-    default: Date.now
+    get: function(url) {
+      if(! url) {
+        return url;
+      } else {
+        if(
+          url.indexOf('http://') !== 0 &&
+          url.indexOf('https://') !== 0
+        ) {
+          url = 'http://' + url;
+        }
+
+        return url;
+      }
+    }
   }
+},
+{
+  timestamps: {}
 });
 
 // register the getter

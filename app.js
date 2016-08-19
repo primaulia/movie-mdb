@@ -1,11 +1,10 @@
 // CONSTANT VARIABLE, DON'T CHANGE
 var jwt_secret = 'supercalifragilisticexpialidocious';
-var mongo_url = process.env.MONGODB_URI ||
-  'mongodb://localhost/mymdb_db';
+var mongo_url = process.env.MONGODB_URI || 'mongodb://localhost/mymdb_db';
 
 // require mongoose, and connect it with the given url
 var mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise; // to fix mongoose promise deprecation warning
 mongoose.connect(mongo_url)
 
 // require installed modules
@@ -14,7 +13,6 @@ var expressJWT = require('express-jwt');
 var jwt = require('jsonwebtoken');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
-var unless = require('express-unless');
 
 // require express module
 var express = require('express');
@@ -33,6 +31,7 @@ app.use(cookieParser());
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  // dont forget to allow authorization in header for JWT
   next();
 });
 
@@ -45,11 +44,10 @@ app.use(
     path: [
       '/api/signup',
       '/api/login',
-      // {
-      //   url: new RegExp('/api.*/', 'i')
-      // }
-      // '/login',
-      // { url: new RegExp('/users.*/', 'i'), methods: ['PUT', 'GET']  }
+      {
+        url: new RegExp('/api.*/', 'i'),
+        // method: ['GET']
+      }
     ]
   })
 );
@@ -72,7 +70,7 @@ app.use('/api', api_routes);
 
 // listening to the port
 // set up the port
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 7000;
 app.set('port', port);
 app.listen(app.get('port'), function() {
   console.log('running on port: ' + app.get('port'));

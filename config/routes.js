@@ -6,8 +6,9 @@ var express = require('express'),
 // Movie MDB API Models list
 
 // requiring the Movie module
-var Movie = require('../models/movie');
 var Actor = require('../models/actor');
+var Director = require('../models/director');
+var Movie = require('../models/movie');
 var User = require('../models/user');
 
 // signup route
@@ -98,7 +99,10 @@ router.route('/users/:user_id')
 
 router.route('/movies')
   .get(function(req, res) {
-    Movie.find({}).exec(function(err, movies) {
+    Movie.find({})
+         .populate('actors')
+         .populate('director')
+         .exec(function(err, movies) {
       if (err) res.status(400).send(err);
       res.json(movies);
     });
@@ -110,6 +114,28 @@ router.route('/movies')
       if (err) return res.status(400).send(err);
 
       res.json(new_movie);
+    });
+  });
+
+router.route('/movies/:movie_id')
+  .get(function(req, res, next) {
+    res.json(req.movie);
+  })
+  .post(function(req, res, next) {
+    var movie = req.movie;
+
+    var new_actor = new Actor({ fullName: 'Steve Geluso', email: 'steve@gmail.com'});
+
+    var new_director = new Director({ fullName: 'Rachel Lim' })
+
+    new_director.save(function(err) {
+      if(err) res.status(400).send(err);
+      movie.director = new_director.id ;
+      movie.save(function(err, updated_movie) {
+        if(err) res.status(400).send(err);
+
+        res.send({ message: "success update" });
+      });
     });
   });
 
@@ -172,6 +198,7 @@ router.route('/actors/:actor_id')
     res.json(req.actor);
   })
 
+// all the router params
 router.param('actor_id', function(req, res, next, actor_id) {
   Actor.findOne({
     _id: actor_id
@@ -179,6 +206,20 @@ router.param('actor_id', function(req, res, next, actor_id) {
     if (err) res.status(400).send(err);
 
     req.actor = actor;
+    next();
+  });
+});
+
+router.param('movie_id', function(req, res, next, movie_id) {
+  Movie.findOne({
+    _id: movie_id
+  })
+  .populate('actors')
+  .populate('director')
+  .exec(function(err, movie) {
+    if (err) res.status(400).send(err);
+
+    req.movie = movie;
     next();
   });
 });

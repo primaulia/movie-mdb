@@ -39,10 +39,6 @@ var actorSchema = new mongoose.Schema({
       }
     }
   },
-  // created_at: {
-  //   type: Date,
-  //   default: Date.now
-  // }
 });
 
 // example of a query helper
