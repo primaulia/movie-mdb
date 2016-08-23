@@ -1,7 +1,7 @@
 // require mongoose
 var mongoose = require('mongoose');
 
-var Actor = mongoose.model("Actor");
+// var Actor = mongoose.model("Actor");
 var Director = mongoose.model("Director");
 
 // setting up how json structure would be like

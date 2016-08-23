@@ -11,6 +11,8 @@ var Director = require('../models/director');
 var Movie = require('../models/movie');
 var User = require('../models/user');
 
+var blacklist = require('express-jwt-blacklist');
+
 // signup route
 router.post('/signup', function(req, res) {
   // res.send(req.body);
@@ -101,11 +103,20 @@ router.route('/movies')
   .get(function(req, res) {
     Movie.find({})
          .populate('actors')
-         .populate('director')
+        //  .populate('director')
          .exec(function(err, movies) {
-      if (err) res.status(400).send(err);
-      res.json(movies);
-    });
+          if (err) res.status(400).send(err);
+          res.json(movies);
+        });
+
+    // Actor.findOne({ name: 'Junius Sim'}, function(err, actor){
+    //   var actor_id = actor.id;
+    //
+    //   Movie.find({
+    //     // director: director_id // find by director id
+    //     actors: { $in: [ actor_id ] }
+    //   })
+    // });
   })
   .post(function(req, res, next) {
     var new_movie = new Movie(req.body);
@@ -222,6 +233,24 @@ router.param('movie_id', function(req, res, next, movie_id) {
     req.movie = movie;
     next();
   });
+});
+
+var isRevokedCallback = function(req, payload, done){
+  var issuer = payload.iss;
+  var tokenId = payload.jti;
+
+  data.getRevokedToken(issuer, tokenId, function(err, token){
+    if (err) { return done(err); }
+    return done(null, !!token);
+  });
+};
+
+router.get('/logout', function (req, res) {
+  // res.send(req.user);
+
+  //revoke token for this req.user
+  blacklist.revoke(req.user)
+  res.send('logout success');
 });
 
 module.exports = router;

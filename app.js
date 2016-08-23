@@ -10,6 +10,7 @@ mongoose.connect(mongo_url)
 // require installed modules
 var bodyParser = require('body-parser');
 var expressJWT = require('express-jwt');
+var blacklist = require('express-jwt-blacklist');
 var jwt = require('jsonwebtoken');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
@@ -35,19 +36,24 @@ app.use(function(req, res, next) {
   next();
 });
 
+blacklist.configure({
+  tokenId: 'id'
+});
+
 // express-jwt
 app.use(
   expressJWT({
-    secret: jwt_secret
+    secret: jwt_secret,
+    isRevoked: blacklist.isRevoked
   })
   .unless({
     path: [
       '/api/signup',
       '/api/login',
-      {
-        url: new RegExp('/api.*/', 'i'),
-        // method: ['GET']
-      }
+      // {
+      //   url: new RegExp('/api.*/', 'i'),
+      //   method: ['GET']
+      // }
     ]
   })
 );

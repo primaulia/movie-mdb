@@ -13,8 +13,7 @@ var actorSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    unique: true,
-    required: [true, 'Email not found'],
+    // required: [true, 'Email not found'],
     match: [/.+\@.+\..+/, 'Email is invalid']
   },
   age: {
